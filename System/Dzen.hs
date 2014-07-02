@@ -59,6 +59,7 @@ module System.Dzen
     ,module System.Dzen.Padding
     ,module System.Dzen.Bars
     ,module System.Dzen.Process
+    ,module System.Dzen.Other
     ) where
 
 import System.Dzen.Base
@@ -67,7 +68,7 @@ import System.Dzen.Graphics
 import System.Dzen.Padding
 import System.Dzen.Bars
 import System.Dzen.Process
-
+import System.Dzen.Other
 
 -- $example1p1
 --
