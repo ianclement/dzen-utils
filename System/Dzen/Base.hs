@@ -1,3 +1,5 @@
+{-# LANGUAGE TypeFamilies, MultiParamTypeClasses #-}
+
 -- |
 -- Module      :  System.Dzen.Base
 -- Copyright   :  (c) 2009 Felipe A. Lessa
@@ -35,7 +37,9 @@ module System.Dzen.Base
     ,inputPrinter'
     ,cstr
     ,cshow
-
+    ,cfun
+    ,cfun'
+     
      -- * Combining printers
     ,Combine(..)
      -- $combine
@@ -251,8 +255,15 @@ combine split = f
                      -- Again, note how state is duplicated
 {-# INLINE combine #-}
 
+cfun :: (a -> Printer b) -> Printer (a, b)
+cfun f = P $ \st (i, j) -> let (P p) = f i
+                               (dsT, _) = p st j
+                           in (dsT, cfun f)
 
-
+cfun' :: (a -> Printer a) -> Printer a
+cfun' f = P $ \st i -> let (P p) = f i
+                           (dsT, _) = p st i
+                       in (dsT, cfun' f)
 
 -- $apply
 --
