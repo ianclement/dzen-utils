@@ -15,6 +15,8 @@ module System.Dzen.Other
     ,ca
     ) where
 
+import System.Dzen.Base
+
 data Button = LeftButton | MiddleButton | RightButton deriving (Eq, Enum)
 
 ca :: Transform a => Button -> String -> a -> a
