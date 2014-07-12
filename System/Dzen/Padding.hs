@@ -31,6 +31,9 @@
 -- means that an auto-padded @Printer@ will never shrink its
 -- size. This is very useful if you don't want everything swinging
 -- on your bar everytime the bar is updated.
+--
+-- [chopping] TODO
+
 module System.Dzen.Padding
     (-- * Manual padding
      -- $padWarning
@@ -39,14 +42,26 @@ module System.Dzen.Padding
     ,padC
     ,pad
     ,PadWhere(..)
-
+     
      -- * Automatic padding
      -- $autoPad
     ,autoPadL
     ,autoPadR
     ,autoPadC
     ,autoPad
-    ) where
+
+     -- * Chopping
+    ,chopL
+    ,chopR
+    ,chop  
+    ,ChopWhere(..)
+
+     -- * Fitting
+     ,fitL
+     ,fitR
+     ,fit  
+     ,FitWhere(..)
+     ) where
 
 import System.Dzen.Internal
 import System.Dzen.Base
@@ -94,9 +109,39 @@ pad c w n = transform $ DS . (pad' .) . unDS
 -- | Where to add the padding characters.
 data PadWhere = PadLeft | PadRight | PadCenter
 
+chopL :: Transform a => Int -> (a -> a)
+chopL = chop ChopLeft
 
+chopR :: Transform a => Int -> (a -> a)
+chopR = chop ChopRight
 
+chop :: Transform a => ChopWhere -> Int -> (a -> a)
+chop w n = transform $ DS . (chop' .) . unDS
+    where
+      chop' (string, Just k) | k > n =
+        (case w of
+            ChopLeft  -> drop (k-n) . string
+            ChopRight -> \s -> let str = take n $ string ""
+                               in  str ++ s
+          , Just n)
+      chop' other = other
 
+-- | Where to remove characters.
+data ChopWhere = ChopLeft | ChopRight  -- ChopCenter(?)
+
+-- Fitting
+
+fitL :: Transform a => Int -> (a -> a)
+fitL = fit ' ' FitLeft
+
+fitR :: Transform a => Int -> (a -> a)
+fitR = fit ' ' FitRight
+
+fit :: Transform a => Char -> FitWhere -> Int -> (a -> a)
+fit c FitLeft n  = (pad c PadRight n) . (chop ChopRight n)
+fit c FitRight n = (pad c PadLeft n) . (chop ChopLeft n)
+
+data FitWhere = FitLeft | FitRight
 
 -- $autoPad
 --
