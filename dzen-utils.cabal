@@ -5,9 +5,9 @@ synopsis:            Utilities for creating inputs for dzen.
 category:            System
 license:             GPL
 license-file:        LICENSE
-author:              Felipe Almeida Lessa
-copyright:           (c) 2009 Felipe A. Lessa
-maintainer:          felipe.lessa@gmail.com
+author:              Felipe Almeida Lessa, Ian Clement
+copyright:           (c) 2009-2014 Felipe A. Lessa, Ian Clement
+maintainer:          ian.clement@gmail.com
 build-type:          Simple
 tested-with:         GHC
 extra-source-files:  Example1.hs, Example2.hs
