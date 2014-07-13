@@ -106,6 +106,18 @@ simple f = fix $ P . const . (. f) . flip (,)
 simple' :: (a -> String) -> Printer a
 simple' = simple . (str .)
 
+-- | Construct a @Printer@ that depends on the input and another printer. 
+fromPrinter :: (a -> Printer b) -> Printer (a, b)
+fromPrinter f = P $ \st (i, j) -> let (P p) = f i
+                                      (dsT, _) = p st j
+                                  in (dsT, fromPrinter f)
+
+-- | Link 'fromPrinter', but the input is now the same for both the function and the printer. 
+fromPrinter' :: (a -> Printer a) -> Printer a
+fromPrinter' f = P $ \st i -> let (P p) = f i
+                                  (dsT, _) = p st i
+                              in (dsT, fromPrinter' f)
+
 -- | Constructs a @Printer@ that depends on the current
 --   and on the previous inputs.
 inputPrinter :: (b -> a -> (DString, b)) -> b -> Printer a
@@ -255,15 +267,6 @@ combine split = f
                      -- Again, note how state is duplicated
 {-# INLINE combine #-}
 
-cfun :: (a -> Printer b) -> Printer (a, b)
-cfun f = P $ \st (i, j) -> let (P p) = f i
-                               (dsT, _) = p st j
-                           in (dsT, cfun f)
-
-cfun' :: (a -> Printer a) -> Printer a
-cfun' f = P $ \st i -> let (P p) = f i
-                           (dsT, _) = p st i
-                       in (dsT, cfun' f)
 
 -- $apply
 --
