@@ -37,8 +37,8 @@ module System.Dzen.Base
     ,inputPrinter'
     ,cstr
     ,cshow
-    ,cfun
-    ,cfun'
+    ,fromPrinter
+    ,fromPrinter'
      
      -- * Combining printers
     ,Combine(..)
